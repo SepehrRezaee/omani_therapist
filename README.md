@@ -163,9 +163,3 @@ MIT License. See [LICENSE](LICENSE) for details.
 **Made with ❤️ for the people of Oman.**
 
 ```
-
----
-
-**This README is ready for production and GitHub!**  
-If you want any customization (badges, screenshots, etc), let me know!
-```
