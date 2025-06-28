@@ -34,7 +34,7 @@ The system enables users to speak naturally via their browser, receive real-time
 ### 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/SepehrRezaee/omani-voice-therapist.git
+git clone https://github.com/SepehrRezaee/omani_therapist.git
 cd omani-voice-therapist
 ````
 
@@ -72,7 +72,7 @@ docker compose up
 ## 🗂️ Project Structure
 
 ```
-omani-voice-therapist/
+omani_therapist/
 │
 ├── backend/
 │   ├── main.py              # FastAPI app
@@ -141,7 +141,7 @@ omani-voice-therapist/
 ## 🧑‍🔧 Contributions
 
 PRs, issues, and suggestions are welcome!
-Please [open an issue](https://github.com/SepehrRezaee/omani-voice-therapist/issues) or submit a pull request.
+Please [open an issue](https://github.com/SepehrRezaee/omani_therapist/issues) or submit a pull request.
 
 ---
 
