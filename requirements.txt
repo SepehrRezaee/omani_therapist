@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+requests
+streamlit
+google-genai
+# Optionally:
+streamlit-webrtc
+av
+aioice
+pytest
+pytest-mock
+selenium
+pydantic_settings

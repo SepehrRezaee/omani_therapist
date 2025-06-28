@@ -1,0 +1,14 @@
+#version: '3.8'
+
+services:
+  omani-voice-therapist:
+    build: .
+    container_name: omani-voice-therapist
+    ports:
+      - "8000:8000"   # FastAPI backend
+      - "8501:8501"   # Streamlit frontend
+    env_file:
+      - backend/.env
+    volumes:
+      - ./data:/app/data   # Persistent audio/DB storage
+    restart: unless-stopped
