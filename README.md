@@ -26,6 +26,7 @@ The system enables users to speak naturally via their browser, receive real-time
 - 🗃️ **Session Logging**: Secure, local-only logging of all conversations and metadata
 - 🛡️ **Consent Gate**: User must accept privacy policy and consent for session logging
 - 🏗️ **Containerized**: Fully dockerized for easy deployment
+- 🧠 **Self-Evolving Memory**: Analyzes past sessions to build a long-term user profile, allowing the agent to remember preferences and recurring themes for more personalized therapy.
 
 ---
 
@@ -81,6 +82,7 @@ omani_therapist/
 │   ├── models.py
 │   ├── speech_utils.py
 │   ├── therapy_core.py
+│   ├── evolution_core.py    # Self-evolution logic
 │   ├── .env
 │   └── ...
 │
