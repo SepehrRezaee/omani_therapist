@@ -72,11 +72,13 @@ def is_crisis(transcript: str, emotion: str = None, history: List[Tuple[str, str
 
 
 # --- Response Generation ---
-def system_prompt(history: List[Tuple[str, str]]) -> str:
+def system_prompt(history: List[Tuple[str, str]], user_insights: str = "") -> str:
     history_txt = "\n".join([f"مستخدم: {h[0]}\nمعالج: {h[1]}" for h in history])
+    insights_txt = f"\nملاحظات عن المستخدم:\n{user_insights}\n" if user_insights else ""
     return (
         "أنت معالج افتراضي عماني تستمع للمستخدم وتستخدم أساليب علمية "
         "مثل العلاج السلوكي المعرفي وتراعي الدين والعادات المحلية.\n"
+        f"{insights_txt}"
         f"{history_txt}\n"
         "رد بإيجاز، تعاطف، وعلاجات عملية باللهجة العمانية."
     )
@@ -97,12 +99,13 @@ def generate_response(
         transcript: str,
         emotion: str,
         history: List[Tuple[str, str]] = [],
+        user_insights: str = "",
         lang_hint: str = "Omani Arabic",
         code_switching: bool = True
 ) -> str:
     user_message = transcript.strip()
     prompt = (
-        f"{system_prompt(history)}\n"
+        f"{system_prompt(history, user_insights)}\n"
         f"سؤال المستخدم: {user_message}\n"
         f"العاطفة المتوقعة: {emotion}\n"
         f"جواب المعالج:"

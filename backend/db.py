@@ -115,3 +115,56 @@ def export_session(session_id: str) -> Optional[List[dict]]:
     except Exception as e:
         logger.error(f"[DB] export_session failed: {e}")
         return None
+
+
+# --- User Insights (Long-Term Memory) ---
+def init_insights_db():
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cur = conn.cursor()
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS user_insights (
+                user_id TEXT NOT NULL PRIMARY KEY,
+                insights TEXT NOT NULL,
+                last_updated TEXT NOT NULL
+            )""")
+            conn.commit()
+        logger.info("[DB] Insights table ready.")
+    except Exception as e:
+        logger.error(f"[DB] Insights init failed: {e}")
+
+init_insights_db()
+
+
+def get_user_insights(user_id: str) -> str:
+    """Retrieve the summarized insights for a specific user."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT insights FROM user_insights WHERE user_id = ?", (user_id,))
+            row = cur.fetchone()
+        if row:
+            return row[0]
+        return ""
+    except Exception as e:
+        logger.error(f"[DB] get_user_insights failed: {e}")
+        return ""
+
+
+def save_user_insights(user_id: str, insights: str) -> None:
+    """Upsert user insights."""
+    try:
+        timestamp = datetime.utcnow().isoformat()
+        with sqlite3.connect(DB_PATH) as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO user_insights (user_id, insights, last_updated)
+                VALUES (?, ?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                    insights = excluded.insights,
+                    last_updated = excluded.last_updated
+            """, (user_id, insights, timestamp))
+            conn.commit()
+        logger.info(f"[DB] Saved insights for user {user_id}.")
+    except Exception as e:
+        logger.error(f"[DB] save_user_insights failed: {e}")

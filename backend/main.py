@@ -13,9 +13,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.config import get_settings
 from backend.models import StartSessionResponse, ChatResponse
-from backend.db import log_conversation, get_history
+from backend.db import log_conversation, get_history, get_user_insights
 from backend.speech_utils import transcribe_audio, synthesize_speech
 from backend.therapy_core import analyze_emotion, is_crisis, generate_response, get_consent_text
+from backend.evolution_core import analyze_session_for_insights
 
 # --- Logging Setup ---
 logging.basicConfig(level=logging.INFO)
@@ -95,8 +96,11 @@ async def chat(
     if crisis:
         bot_text = "🚨 نلاحظ حالة نفسية حرجة، يُرجى التواصل مع مختص فورًا."
     else:
+        # Fetch user insights (using default_user for now as we don't have auth yet)
+        user_insights = get_user_insights("default_user")
         bot_text = generate_response(
             transcript, emotion, history,
+            user_insights=user_insights,
             lang_hint="Omani Arabic",
             code_switching=True
         )
@@ -142,4 +146,16 @@ def serve_audio(session_id: str, timestamp: str):
         logger.warning("Audio not found: %s", path)
         raise HTTPException(status_code=404, detail="Audio not found")
     return FileResponse(path, media_type="audio/wav")
+
+
+from fastapi import BackgroundTasks
+
+@app.post("/end_session/")
+def end_session(session_id: str = Form(...), background_tasks: BackgroundTasks = BackgroundTasks()):
+    """
+    End the session and trigger self-evolution analysis in the background.
+    """
+    logger.info(f"Ending session {session_id} and triggering evolution.")
+    background_tasks.add_task(analyze_session_for_insights, session_id, "default_user")
+    return {"status": "ok", "message": "Session ended, evolution triggered."}
 
